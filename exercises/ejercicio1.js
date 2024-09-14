@@ -11,27 +11,25 @@ objeto que hemos creado anteriormente.
 
 */
 const user = {
-    name: "Ramiro",
-    surname: "Covian",
+    name: 'Ramiro',
+    surname: 'Covian',
     modules: [
-        { "Node.js": "2024-10-21" },
-        { "Git": "2024-10-22" },
-        { "React": "2024-12-16" }
+        { name: 'Node.js', date: '2024-10-21' },
+        { name: 'Git', date: '2024-10-22' },
+        { name: 'React', date: '2024-12-16' }
     ],
     active_search: true,
 
 };
 
-// console.log(user.modules); // devueve la lista de diccionarios
-// console.log(user.modules[2]); // devuelve el diccionario { "React": "2024-12-16" }
-
-// console.log(user.modules[2].React); // devuelve el valor de la clave React -> "2024-12-16" 
-// console.log(user.modules[2]["React"]); // otra forma de obtener el valor de las claves
-
-let message = ""
-if (user.active_search === true) {
-    message = `La fecha de inicio del modulo de React es el ${user.modules[2].React}`;
-} else {
-    message = "Aun no hay fecha definida para el modulo de React.";
+const seeDateReact = (info_search) => {
+    let message = ''
+    if (info_search === true) {
+        message = `La fecha de inicio del modulo de React es el ${user.modules[2].date}`;
+    } else {
+        message = 'Aun no hay fecha definida para el modulo de React.';
+    };
+    return message;
 };
 
+console.log(seeDateReact(true));
