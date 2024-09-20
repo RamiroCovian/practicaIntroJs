@@ -63,7 +63,7 @@ const musicCatalog = () => {
       throw new Error(`La playlist ${playlistName} no se encuentra en listados.`);
     } else {
       playlist.songs = [...playlist.songs, song];
-    }
+    };
   };
 
 
@@ -74,9 +74,16 @@ const musicCatalog = () => {
    * @throws {Error} If the playlist or song is not found.
    */
   const removeSongFromPlaylist = (playlistName, title) => {
-
+    const playlist = playlists.find(playlist => playlist.name === playlistName);
+    if (!playlist) {
+      throw new Error(`La playlist ${playlistName} no se encuentra en listados.`);
+    } else {
+      playlist.songs = playlist.songs.filter(song => song.title !== title);
+      if (!playlist.songs) {
+        throw new Error(`La canción ${title} no se encuentra en la playlist ${playlistName}`);
+      };
+    };
   };
-
   /**
    * Marks a song as a favorite or removes the favorite status.
    * @param {string} playlistName - The name of the playlist containing the song.
@@ -95,6 +102,7 @@ const musicCatalog = () => {
 
   return { createPlaylist, addSongToPlaylist, removeSongFromPlaylist, sortSongs, getAllPlaylists, removePlaylist, favoriteSong };
 };
+
 
 export default musicCatalog;
 
