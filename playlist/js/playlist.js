@@ -62,8 +62,12 @@ const musicCatalog = () => {
     if (!playlist) {
       throw new Error(`La playlist ${playlistName} no se encuentra en listados.`);
     } else {
+      if (song.favorite === undefined) {
+        song.favorite = false;
+      }
       playlist.songs = [...playlist.songs, song];
     };
+    console.log(playlist);
   };
 
 
