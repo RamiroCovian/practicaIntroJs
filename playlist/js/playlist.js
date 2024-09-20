@@ -64,7 +64,6 @@ const musicCatalog = () => {
     } else {
       playlist.songs = [...playlist.songs, song];
     }
-    return playlists;
   };
 
 
