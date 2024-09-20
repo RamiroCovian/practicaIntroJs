@@ -67,7 +67,6 @@ const musicCatalog = () => {
       }
       playlist.songs = [...playlist.songs, song];
     };
-    console.log(playlist);
   };
 
 
@@ -114,7 +113,28 @@ const musicCatalog = () => {
    * @returns {Song[]} The list of sorted songs.
    * @throws {Error} If the playlist is not found or the criterion is invalid.
    */
-  const sortSongs = (playlistName, criterion) => { };
+  const sortSongs = (playlistName, criterion) => {
+    // Validar criterios permitidos
+    const validCriterion = ['title', 'artist', 'duration'];
+    if (!validCriterion.includes(criterion)) {
+      throw new Error(`Criterio invalido: ${criterion}. Los criterios validos son: ${validCriterion.join(', ')}.`);
+    }
+
+    // Buscar la playlist
+    const playlist = playlists.find(playlist => playlist.name === playlistName);
+    if (!playlist) {
+      throw new Error(`La playlist ${playlistName} no se encuentra en listados.`);
+    }
+
+    // Ordenar las canciones según el criterio
+    playlist.songs.sort((a, b) => {
+      if (a[criterion] < b[criterion]) return -1;
+      if (a[criterion] > b[criterion]) return 1;
+      return 0;
+    });
+
+    return playlist.songs;
+  };
 
   return { createPlaylist, addSongToPlaylist, removeSongFromPlaylist, sortSongs, getAllPlaylists, removePlaylist, favoriteSong };
 };
