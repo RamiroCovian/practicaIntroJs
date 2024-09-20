@@ -47,7 +47,9 @@ const musicCatalog = () => {
    * Removes a playlist from the catalog.
    * @param {string} playlistName - The name of the playlist to remove.
    */
-  const removePlaylist = (playlistName) => { };
+  const removePlaylist = (playlistName) => {
+    playlists = playlists.filter(playlist => playlist.name !== playlistName);
+  };
 
   /**
    * Adds a song to a specific playlist.
@@ -56,6 +58,13 @@ const musicCatalog = () => {
    * @throws {Error} If the playlist is not found.
    */
   const addSongToPlaylist = (playlistName, song) => {
+    const playlist = playlists.find(playlist => playlist.name === playlistName);
+    if (!playlist) {
+      throw new Error(`La playlist ${playlistName} no se encuentra en listados.`);
+    } else {
+      playlist.songs = [...playlist.songs, song];
+    }
+    return playlists;
   };
 
 
