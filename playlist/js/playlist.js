@@ -28,11 +28,7 @@ const musicCatalog = () => {
    * @param {string} playlistName - The name of the new playlist.
    */
   const createPlaylist = (playlistName) => {
-    let newplaylist = {
-      name: playlistName,
-      songs: [],
-    };
-    playlists = [...playlists, newplaylist];
+    playlists = [...playlists, { name: playlistName, songs: [] }];
   };
 
   /**
@@ -48,7 +44,7 @@ const musicCatalog = () => {
    * @param {string} playlistName - The name of the playlist to remove.
    */
   const removePlaylist = (playlistName) => {
-    playlists = playlists.filter(playlist => playlist.name !== playlistName);
+    playlists = playlists.filter((playlist) => playlist.name !== playlistName);
   };
 
   /**
@@ -57,16 +53,27 @@ const musicCatalog = () => {
    * @param {{ title: string, artist: string, genre: string, duration: number }} song - The song to add to the playlist.
    * @throws {Error} If the playlist is not found.
    */
+
   const addSongToPlaylist = (playlistName, song) => {
-    const playlist = playlists.find(playlist => playlist.name === playlistName);
-    if (!playlist) {
-      throw new Error(`La playlist ${playlistName} no se encuentra en listados.`);
-    } else {
-      if (song.favorite === undefined) {
-        song.favorite = false;
+    if (song.favorite === undefined) {
+      song.favorite = false;
+    }
+
+    let playlistFound = false;
+    playlists = playlists.map(playlist => {
+      if (playlist.name === playlistName) {
+        playlistFound = true;
+        return {
+          ...playlist,
+          songs: [...playlist.songs, song]
+        };
       }
-      playlist.songs = [...playlist.songs, song];
-    };
+      return playlist;
+    });
+
+    if (!playlistFound) {
+      throw new Error(`La playlist ${playlistName} no se encuentra en listados.`);
+    }
   };
 
 
@@ -76,17 +83,27 @@ const musicCatalog = () => {
    * @param {string} title - The title of the song to remove.
    * @throws {Error} If the playlist or song is not found.
    */
+
   const removeSongFromPlaylist = (playlistName, title) => {
-    const playlist = playlists.find(playlist => playlist.name === playlistName);
-    if (!playlist) {
+    let playlistFound = false;
+
+    playlists = playlists.map(playlist => {
+      if (playlist.name === playlistName) {
+        playlistFound = true;
+        const updatedSongs = playlist.songs.filter(song => song.title !== title);
+        if (updatedSongs.length === playlist.songs.length) {
+          throw new Error(`La canción ${title} no se encuentra en la playlist ${playlistName}`);
+        }
+        return { ...playlist, songs: updatedSongs };
+      }
+      return playlist;
+    });
+
+    if (!playlistFound) {
       throw new Error(`La playlist ${playlistName} no se encuentra en listados.`);
-    } else {
-      playlist.songs = playlist.songs.filter(song => song.title !== title);
-      if (!playlist.songs) {
-        throw new Error(`La canción ${title} no se encuentra en la playlist ${playlistName}`);
-      };
-    };
+    }
   };
+
   /**
    * Marks a song as a favorite or removes the favorite status.
    * @param {string} playlistName - The name of the playlist containing the song.
@@ -113,6 +130,7 @@ const musicCatalog = () => {
    * @returns {Song[]} The list of sorted songs.
    * @throws {Error} If the playlist is not found or the criterion is invalid.
    */
+
   const sortSongs = (playlistName, criterion) => {
     // Validar criterios permitidos
     const validCriterion = ['title', 'artist', 'duration'];
@@ -120,21 +138,28 @@ const musicCatalog = () => {
       throw new Error(`Criterio invalido: ${criterion}. Los criterios validos son: ${validCriterion.join(', ')}.`);
     }
 
-    // Buscar la playlist
-    const playlist = playlists.find(playlist => playlist.name === playlistName);
-    if (!playlist) {
+    let playlistFound = false;
+
+    playlists = playlists.map((playlist) => {
+      if (playlist.name === playlistName) {
+        playlistFound = true;
+        const sortedSongs = [...playlist.songs].sort((a, b) => {
+          if (a[criterion] < b[criterion]) return -1;
+          if (a[criterion] > b[criterion]) return 1;
+          return 0;
+        });
+        return {
+          ...playlist,
+          songs: sortedSongs,
+        };
+      }
+      return playlist;
+    });
+    if (!playlistFound) {
       throw new Error(`La playlist ${playlistName} no se encuentra en listados.`);
     }
-
-    // Ordenar las canciones según el criterio
-    playlist.songs.sort((a, b) => {
-      if (a[criterion] < b[criterion]) return -1;
-      if (a[criterion] > b[criterion]) return 1;
-      return 0;
-    });
-
-    return playlist.songs;
   };
+
 
   return { createPlaylist, addSongToPlaylist, removeSongFromPlaylist, sortSongs, getAllPlaylists, removePlaylist, favoriteSong };
 };
